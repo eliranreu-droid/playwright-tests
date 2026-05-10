@@ -69,6 +69,12 @@ pipeline {
                 reportName           : 'Playwright Test Report'
             ])
 
+            // Archive the full Playwright report folder
+            archiveArtifacts(
+                artifacts: 'playwright-report/**',
+                allowEmptyArchive: true
+            )
+
             // Archive videos/traces for failed tests
             archiveArtifacts(
                 artifacts: 'test-results/**',
