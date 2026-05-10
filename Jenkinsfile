@@ -49,6 +49,21 @@ pipeline {
                 echo 'JUnit XML report:       test-results/junit.xml'
             }
         }
+
+        stage('AI Analysis') {
+            when {
+                expression { currentBuild.currentResult == 'FAILURE' }
+            }
+            steps {
+                withCredentials([string(credentialsId: 'ANTHROPIC_API_KEY', variable: 'ANTHROPIC_API_KEY')]) {
+                    // Keep the build at FAILURE; mark only this stage UNSTABLE if the script itself errors
+                    catchError(buildResult: 'FAILURE', stageResult: 'UNSTABLE') {
+                        sh 'pip install --quiet anthropic'
+                        sh 'python3 failure-agent.py test-results/results.json'
+                    }
+                }
+            }
+        }
     }
 
     post {
