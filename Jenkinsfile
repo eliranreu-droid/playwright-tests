@@ -58,8 +58,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'ANTHROPIC_API_KEY', variable: 'ANTHROPIC_API_KEY')]) {
                     // Keep the build at FAILURE; mark only this stage UNSTABLE if the script itself errors
                     catchError(buildResult: 'FAILURE', stageResult: 'UNSTABLE') {
-                        sh 'pip install --quiet anthropic'
-                        sh 'python3 failure-agent.py test-results/results.json'
+                        sh 'npx ts-node failure-agent.ts test-results/results.json'
                     }
                 }
             }
